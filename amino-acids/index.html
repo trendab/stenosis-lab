@@ -138,7 +138,7 @@ svg .ol{stroke:var(--stickline)} svg .stub{stroke:var(--stub)} svg text{fill:var
         <li>Two atoms at the tip: O + O = acid, O + N = amide. Short (1 C before the tip carbon) = <b>Asp/Asn</b>, longer = <b>Glu/Gln</b>.</li>
         <li>Long chain, one N at the end: <b>Lys</b>. Three N at the end: <b>Arg</b>.</li>
         <li>Rings: carbon hexagon = <b>Phe</b>; plus an OH = <b>Tyr</b>; 5-ring with two N = <b>His</b>; two fused rings, one N = <b>Trp</b>.</li>
-        <li>A ring that closes back onto the backbone N: <b>Pro</b>. No side chain at all: <b>Gly</b>.</li>
+        <li>A ring that closes back onto the backbone N: <b>Pro</b>. Side chain is only an H (invisible in line formulas, nothing hanging off Cα): <b>Gly</b>, the only achiral one.</li>
       </ol>
     </details>
     <div class="row">
@@ -187,7 +187,7 @@ const GROUPS=[
  {id:'HP',title:'Special',sub:'His: protonation near pH 7 · Pro: rigid ring'}
 ];
 const AA={
- G:{t:'Gly',n:'Glycine',h:'Side chain is just H. No Cβ.',ops:[]},
+ G:{t:'Gly',n:'Glycine',h:'Side chain is just H, so no Cβ and not chiral.',ops:[]},
  A:{t:'Ala',n:'Alanine',h:'One CH₃.',ops:[['CB','C','CA',90]]},
  V:{t:'Val',n:'Valine',h:'3 C, branched right at Cβ (isopropyl).',ops:[['CB','C','CA',90],['CG1','C','CB',30],['CG2','C','CB',150]]},
  L:{t:'Leu',n:'Leucine',h:'4 C, branched at Cγ.',ops:[['CB','C','CA',90],['CG','C','CB',30],['CD1','C','CG',90],['CD2','C','CG',-30]]},
