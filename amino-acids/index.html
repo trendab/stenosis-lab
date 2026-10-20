@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Learn the 20 amino acids: line formulas and stick models, identification drills and peptide reading.">
+<title>Amino Acid Side Chains</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Familjen+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0}
+
+/* Layout: one narrow column of tools; molecules sit on plain lab-white panels, element colours are the only loud colour */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#17212b; --muted:#5a6775; --line:#d7dde4;
+  --accent:#0e6e68; --accent-soft:#dcefed; --ok:#1d7f48; --ok-soft:#dff2e6; --bad:#b8372a; --bad-soft:#f8e1de;
+  --eC:#7f868f; --eN:#2c5be3; --eO:#df3328; --eS:#d9ac00; --stickline:#3b434c; --stub:#9aa3ad;
+  --f-display:"Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-body:"Atkinson Hyperlegible", "Segoe UI", Arial, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10151b; --surface:#171e26; --fg:#e6ebf0; --muted:#97a3b0; --line:#2a3440;
+  --accent:#4fc2b8; --accent-soft:#16332f; --ok:#5cc98a; --ok-soft:#173226; --bad:#f07a6c; --bad-soft:#3a1d1a;
+  --eC:#aab2bc; --eN:#6f92ff; --eO:#ff5f52; --eS:#f2c81d; --stickline:#05080b; --stub:#5d6874; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10151b; --surface:#171e26; --fg:#e6ebf0; --muted:#97a3b0; --line:#2a3440;
+  --accent:#4fc2b8; --accent-soft:#16332f; --ok:#5cc98a; --ok-soft:#173226; --bad:#f07a6c; --bad-soft:#3a1d1a;
+  --eC:#aab2bc; --eN:#6f92ff; --eO:#ff5f52; --eS:#f2c81d; --stickline:#05080b; --stub:#5d6874; color-scheme:dark}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px;display:flex;flex-direction:column;gap:18px}
+h1{font-family:var(--f-display);font-weight:700;font-size:1.9rem;line-height:1.1;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h2{font-family:var(--f-display);font-weight:700;font-size:1.15rem;margin:0}
+.sub{color:var(--muted);margin:4px 0 0;font-size:.95rem}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.85rem;color:var(--muted);align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:12px;height:12px;border-radius:50%;border:1px solid var(--stickline)}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:4px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.tabs button{flex:1;min-width:0;border:0;background:transparent;color:var(--muted);font:700 .92rem var(--f-body);padding:9px 6px;border-radius:7px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--surface)}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.panel{display:flex;flex-direction:column;gap:16px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+details.box summary{cursor:pointer;font-family:var(--f-display);font-weight:700;font-size:1.05rem}
+.key{margin:10px 0 0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px;font-size:.94rem}
+.key b{font-family:var(--f-mono);font-size:.88rem}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.toggle{display:inline-flex;gap:8px;align-items:center;font-size:.92rem;cursor:pointer}
+.group{display:flex;flex-direction:column;gap:10px}
+.ghead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.ghead .tag{font-family:var(--f-mono);font-weight:700;color:var(--accent);letter-spacing:.06em}
+.ghead small{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px 12px;text-align:left;color:var(--fg);font:inherit;display:flex;flex-direction:column;gap:4px;min-width:0}
+.card svg{width:100%;height:150px;display:block}
+.card .nm{font-weight:700}
+.card .cd{font-family:var(--f-mono);font-size:.85rem;color:var(--muted)}
+.card .hint{font-size:.85rem;color:var(--muted)}
+.hide .card{cursor:pointer}
+.hide .card:not(.open) .reveal{visibility:hidden}
+.hide .card:not(.open) .tapnote{display:block}
+.tapnote{display:none;font-size:.8rem;color:var(--accent)}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;justify-content:center}
+.stage svg{width:100%;max-width:420px;height:260px}
+.answers{display:flex;flex-direction:column;gap:10px}
+.arow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.arow .lab{font-family:var(--f-mono);font-size:.75rem;color:var(--muted);width:100%;letter-spacing:.06em}
+.ab{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:8px;padding:7px 9px;font:700 .9rem var(--f-mono);cursor:pointer;min-width:66px}
+.ab:disabled{cursor:default}
+.ab.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.ab.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.fb{min-height:1.5em;font-size:.95rem}
+.fb .y{color:var(--ok);font-weight:700}.fb .n{color:var(--bad);font-weight:700}
+.btn{border:0;background:var(--accent);color:var(--surface);font:700 .95rem var(--f-body);padding:10px 16px;border-radius:8px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.stats{font-size:.88rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.pscroll{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow-x:auto;padding:8px}
+.pscroll svg{display:block;width:100%;height:auto}
+input[type=text]{flex:1;min-width:0;font:700 1.05rem var(--f-mono);letter-spacing:.12em;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);text-transform:uppercase}
+select{font:inherit;padding:7px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:700 .85rem var(--f-mono);padding:5px 8px;border-radius:6px;border:1px solid var(--line)}
+.chip.y{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
+.chip.n{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.note{font-size:.88rem;color:var(--muted);margin:0}
+svg .eC{stroke:var(--eC)} svg .eN{stroke:var(--eN)} svg .eO{stroke:var(--eO)} svg .eS{stroke:var(--eS)}
+.seglab{font-size:.85rem;color:var(--muted);font-weight:700}
+.seg{display:flex;flex-wrap:wrap;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:4px}
+.seg button{border:0;background:transparent;color:var(--fg);font:700 .9rem var(--f-body);padding:8px 12px;border-radius:7px;cursor:pointer}
+.seg button small{font-weight:400;color:var(--muted);margin-left:4px}
+.seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+svg .skb{stroke:var(--fg)} svg .skf{fill:var(--fg)}
+svg.sk text{font-family:var(--f-body);font-weight:400}
+svg .ol{stroke:var(--stickline)} svg .stub{stroke:var(--stub)} svg text{fill:var(--fg);font-family:var(--f-display);font-weight:700}
+@media (prefers-reduced-motion:no-preference){.ab,.card,.tabs button{transition:background .15s,border-color .15s}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Amino Acid Side Chains</h1>
+    <p class="sub">Grundlagen der Biologie 1 · Locher's groups. Start with line formulas as on his slides, then switch to the stick model used in the exam peptide.</p>
+  </header>
+  <div class="row">
+    <span class="seglab">Drawing style</span>
+    <div class="seg" role="group" aria-label="Drawing style">
+      <button type="button" data-f="line" aria-pressed="true">1 · Line formula <small>slides</small></button>
+      <button type="button" data-f="stick" aria-pressed="false">2 · Stick model <small>exam peptide</small></button>
+    </div>
+  </div>
+  <p class="note" data-for="line">Every corner and line end is a carbon. H on carbon is not drawn. Hashed wedge at Cα = side chain points behind the page (L-configuration in this orientation).</p>
+  <div class="legend" aria-label="Element colours" data-for="stick">
+    <span><i class="dot" style="background:var(--eC)"></i>C grey</span>
+    <span><i class="dot" style="background:var(--eN)"></i>N blue</span>
+    <span><i class="dot" style="background:var(--eO)"></i>O red</span>
+    <span><i class="dot" style="background:var(--eS)"></i>S yellow</span>
+  </div>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="t-learn" aria-selected="true" data-p="learn">Learn</button>
+    <button role="tab" id="t-id" aria-selected="false" data-p="id">Identify</button>
+    <button role="tab" id="t-pep" aria-selected="false" data-p="pep">Read a peptide</button>
+  </nav>
+
+  <section class="panel" id="p-learn">
+    <details class="box" open>
+      <summary>How to read a stick model</summary>
+      <ol class="key">
+        <li>Find the backbone: N – Cα – C(=O), repeating. Read the chain from <b>N</b> to <b>C</b>. Everything hanging off Cα is the side chain.</li>
+        <li>S (yellow) at the end of the chain: <b>Cys</b>. S in the middle with a carbon after it: <b>Met</b>.</li>
+        <li>Grey only: count carbons and find the branch. 1 C = <b>Ala</b>; 3 C branched at Cβ = <b>Val</b>; 4 C branched at Cγ = <b>Leu</b>; 4 C branched at Cβ = <b>Ile</b>.</li>
+        <li>One O: <b>Ser</b> (straight) or <b>Thr</b> (branched, extra C).</li>
+        <li>Two atoms at the tip: O + O = acid, O + N = amide. Short (1 C before the tip carbon) = <b>Asp/Asn</b>, longer = <b>Glu/Gln</b>.</li>
+        <li>Long chain, one N at the end: <b>Lys</b>. Three N at the end: <b>Arg</b>.</li>
+        <li>Rings: carbon hexagon = <b>Phe</b>; plus an OH = <b>Tyr</b>; 5-ring with two N = <b>His</b>; two fused rings, one N = <b>Trp</b>.</li>
+        <li>A ring that closes back onto the backbone N: <b>Pro</b>. No side chain at all: <b>Gly</b>.</li>
+      </ol>
+    </details>
+    <div class="row">
+      <label class="toggle"><input type="checkbox" id="hideToggle"> Hide structures (draw from memory, tap to check)</label>
+    </div>
+    <div id="groups" class="panel"></div>
+  </section>
+
+  <section class="panel" id="p-id" hidden>
+    <div class="stage" id="idStage"></div>
+    <div class="fb" id="idFb" aria-live="polite">Which amino acid is this?</div>
+    <div class="answers" id="answers"></div>
+    <div class="row">
+      <button class="btn" id="idNext">Next</button>
+      <button class="btn ghost" id="idReset">Reset progress</button>
+    </div>
+    <div class="stats" id="idStats"></div>
+    <p class="note">Missed ones come back more often. Progress stays in this browser only.</p>
+  </section>
+
+  <section class="panel" id="p-pep" hidden>
+    <div class="row">
+      <label for="pepLen">Length</label>
+      <select id="pepLen"><option>4</option><option selected>6</option><option>9</option></select>
+      <button class="btn ghost" id="pepNew">New peptide</button>
+    </div>
+    <div class="pscroll"><div id="pepStage"></div></div>
+    <form class="row" id="pepForm">
+      <input type="text" id="pepIn" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. ACVNTI or Ala-Cys-Val" aria-label="Sequence N to C">
+      <button class="btn" type="submit">Check</button>
+    </form>
+    <div class="fb" id="pepFb" aria-live="polite"></div>
+    <div class="chips" id="pepChips"></div>
+    <p class="note">Same format as the oligopeptide slide: name the sequence from N to C, one-letter or three-letter codes.</p>
+  </section>
+</div>
+
+<script>
+const D=Math.PI/180;
+const GROUPS=[
+ {id:'GAVLIM',title:'Aliphatic',sub:'open hydrocarbon chains, hydrophobic, no charge'},
+ {id:'WFY',title:'Aromatic',sub:'delocalised electrons, UV absorption'},
+ {id:'STC',title:'Hydroxyl and thiol',sub:'polar, can form H-bonds'},
+ {id:'DNEQ',title:'Acids and amides',sub:'the four siblings'},
+ {id:'KR',title:'Basic',sub:'positively charged'},
+ {id:'HP',title:'Special',sub:'His: protonation near pH 7 · Pro: rigid ring'}
+];
+const AA={
+ G:{t:'Gly',n:'Glycine',h:'Side chain is just H. No Cβ.',ops:[]},
+ A:{t:'Ala',n:'Alanine',h:'One CH₃.',ops:[['CB','C','CA',90]]},
+ V:{t:'Val',n:'Valine',h:'3 C, branched right at Cβ (isopropyl).',ops:[['CB','C','CA',90],['CG1','C','CB',30],['CG2','C','CB',150]]},
+ L:{t:'Leu',n:'Leucine',h:'4 C, branched at Cγ.',ops:[['CB','C','CA',90],['CG','C','CB',30],['CD1','C','CG',90],['CD2','C','CG',-30]]},
+ I:{t:'Ile',n:'Isoleucine',h:'4 C, branched at Cβ; one arm is ethyl.',ops:[['CB','C','CA',90],['CG1','C','CB',30],['CG2','C','CB',150],['CD1','C','CG1',90]]},
+ M:{t:'Met',n:'Methionine',h:'S inside the chain: CH₂–CH₂–S–CH₃.',ops:[['CB','C','CA',90],['CG','C','CB',30],['SD','S','CG',90],['CE','C','SD',30]]},
+ W:{t:'Trp',n:'Tryptophan',h:'Indole: two fused rings, one N.',ops:[['CB','C','CA',90],['CG','C','CB',30],['@ring',5,'CG',30,[['CD1','C'],['NE1','N'],['CE2','C'],['CD2','C']],'C5'],['@fuse',6,'CE2','CD2','C5',[['CE3','C'],['CZ3','C'],['CH2','C'],['CZ2','C']]]]},
+ F:{t:'Phe',n:'Phenylalanine',h:'Ala + benzene ring.',ops:[['CB','C','CA',90],['CG','C','CB',30],['@ring',6,'CG',30,[['CD1','C'],['CE1','C'],['CZ','C'],['CE2','C'],['CD2','C']]]]},
+ Y:{t:'Tyr',n:'Tyrosine',h:'Phe + OH at the far (para) position.',ops:[['CB','C','CA',90],['CG','C','CB',30],['@ring',6,'CG',30,[['CD1','C'],['CE1','C'],['CZ','C'],['CE2','C'],['CD2','C']]],['OH','O','CZ',30]]},
+ S:{t:'Ser',n:'Serine',h:'Ala + OH.',ops:[['CB','C','CA',90],['OG','O','CB',30]]},
+ T:{t:'Thr',n:'Threonine',h:'Val with one CH₃ swapped for OH.',ops:[['CB','C','CA',90],['OG1','O','CB',30],['CG2','C','CB',150]]},
+ C:{t:'Cys',n:'Cysteine',h:'Ala + SH (Ser with S instead of O).',ops:[['CB','C','CA',90],['SG','S','CB',30]]},
+ D:{t:'Asp',n:'Aspartate',h:'CH₂–COO⁻. Short acid.',ops:[['CB','C','CA',90],['CG','C','CB',30],['OD1','O','CG',90],['OD2','O','CG',-30]]},
+ N:{t:'Asn',n:'Asparagine',h:'CH₂–CONH₂. Short amide.',ops:[['CB','C','CA',90],['CG','C','CB',30],['OD1','O','CG',90],['ND2','N','CG',-30]]},
+ E:{t:'Glu',n:'Glutamate',h:'CH₂–CH₂–COO⁻. Asp + one CH₂.',ops:[['CB','C','CA',90],['CG','C','CB',30],['CD','C','CG',90],['OE1','O','CD',30],['OE2','O','CD',150]]},
+ Q:{t:'Gln',n:'Glutamine',h:'CH₂–CH₂–CONH₂. Asn + one CH₂.',ops:[['CB','C','CA',90],['CG','C','CB',30],['CD','C','CG',90],['NE2','N','CD',30],['OE1','O','CD',150]]},
+ K:{t:'Lys',n:'Lysine',h:'Four CH₂, then NH₃⁺.',ops:[['CB','C','CA',90],['CG','C','CB',30],['CD','C','CG',90],['CE','C','CD',30],['NZ','N','CE',90]]},
+ R:{t:'Arg',n:'Arginine',h:'Three CH₂, then guanidinium (3 N).',ops:[['CB','C','CA',90],['CG','C','CB',30],['CD','C','CG',90],['NE','N','CD',30],['CZ','C','NE',90],['NH1','N','CZ',30],['NH2','N','CZ',150]]},
+ H:{t:'His',n:'Histidine',h:'Imidazole: 5-ring with two N.',ops:[['CB','C','CA',90],['CG','C','CB',30],['@ring',5,'CG',30,[['ND1','N'],['CE1','C'],['NE2','N'],['CD2','C']]]]},
+ P:{t:'Pro',n:'Proline',h:'Side chain closes back onto the backbone N.',ops:[['@fuse',5,'N','CA','TOP',[['CB','C'],['CG','C'],['CD','C']]]]}
+};
+const EXTRA={
+ D:{dbl:[['CG','OD1']],chg:{OD2:-1}}, E:{dbl:[['CD','OE1']],chg:{OE2:-1}},
+ N:{dbl:[['CG','OD1']]}, Q:{dbl:[['CD','OE1']]},
+ K:{chg:{NZ:1}}, R:{dbl:[['CZ','NH1']],chg:{NH1:1}},
+ F:{dbl:[['CG','CD1'],['CE1','CZ'],['CE2','CD2']]}, Y:{dbl:[['CG','CD1'],['CE1','CZ'],['CE2','CD2']]},
+ W:{dbl:[['CG','CD1'],['CD2','CE3'],['CZ3','CH2'],['CZ2','CE2']]}, H:{dbl:[['CG','CD2'],['CE1','NE2']]}
+};
+const CODES=Object.keys(AA);
+const BY3={};CODES.forEach(c=>BY3[AA[c].t.toLowerCase()]=c);
+
+function addSide(c,P,B,pre,f,M){
+ const k=s=>pre+s; const ca=P[k('CA')];
+ P[k('UP')]={x:ca.x,y:ca.y-f};P[k('TOP')]={x:ca.x,y:ca.y-1};
+ M.dbl.add(k('C')+'|'+k('O'));
+ const ex=EXTRA[c]||{};
+ (ex.dbl||[]).forEach(([a,b])=>M.dbl.add(k(a)+'|'+k(b)));
+ Object.entries(ex.chg||{}).forEach(([a,v])=>M.chg[k(a)]=v);
+ for(const op of AA[c].ops){
+  if(op[0]==='@ring'){
+   const [,n,from,dir,verts,ck]=op; const F=P[k(from)]; const R=1/(2*Math.sin(Math.PI/n)); const d=dir*f;
+   const cen={x:F.x+R*Math.cos(d*D),y:F.y+R*Math.sin(d*D)}; if(ck)P[k(ck)]=cen;
+   M.rings.push({keys:[k(from),...verts.map(v=>k(v[0]))],c:cen});
+   let prev=k(from);
+   verts.forEach(([key,el],i)=>{const a=(d+180+(i+1)*360/n)*D;P[k(key)]={x:cen.x+R*Math.cos(a),y:cen.y+R*Math.sin(a),el};B.push([prev,k(key),'sc']);prev=k(key);});
+   B.push([prev,k(from),'sc']);
+  }else if(op[0]==='@fuse'){
+   const [,n,a,b,away,verts]=op; const A=P[k(a)],Bp=P[k(b)],W=P[k(away)];
+   const m={x:(A.x+Bp.x)/2,y:(A.y+Bp.y)/2}; let nx=-(Bp.y-A.y),ny=Bp.x-A.x; const L=Math.hypot(nx,ny); nx/=L;ny/=L;
+   if(nx*(W.x-m.x)+ny*(W.y-m.y)>0){nx=-nx;ny=-ny;}
+   const ap=1/(2*Math.tan(Math.PI/n)),R=1/(2*Math.sin(Math.PI/n)); const cen={x:m.x+nx*ap,y:m.y+ny*ap};
+   const tb=Math.atan2(Bp.y-cen.y,Bp.x-cen.x),step=2*Math.PI/n;
+   let s=1; if(Math.hypot(cen.x+R*Math.cos(tb+step)-A.x,cen.y+R*Math.sin(tb+step)-A.y)<0.1)s=-1;
+   M.rings.push({keys:[k(a),k(b),...verts.map(v=>k(v[0]))],c:cen});
+   let prev=k(b);
+   verts.forEach(([key,el],i)=>{const t=tb+s*(i+1)*step;P[k(key)]={x:cen.x+R*Math.cos(t),y:cen.y+R*Math.sin(t),el};B.push([prev,k(key),'sc']);prev=k(key);});
+   B.push([prev,k(a),'sc']);
+  }else{
+   const [key,el,par,ang]=op; const p=P[k(par)]; const a=ang*f*D;
+   P[k(key)]={x:p.x+Math.cos(a),y:p.y+Math.sin(a),el}; B.push([k(par),k(key),'sc']);
+  }
+ }
+ if(P[k('CB')]){const n=P[k('N')],c=P[k('C')],b=P[k('CB')];const o=(c.x-n.x)*(b.y-n.y)-(c.y-n.y)*(b.x-n.x);M.wedge.push([k('CA'),k('CB'),o>0?'hash':'bold']);}
+}
+const newMeta=()=>({rings:[],dbl:new Set(),chg:{},wedge:[]});
+
+function residueModel(c){
+ const P={},B=[];
+ P['0N']={x:-Math.sqrt(3)/2,y:-.5,el:'N'};P['0CA']={x:0,y:0,el:'C'};P['0C']={x:Math.sqrt(3)/2,y:-.5,el:'C'};P['0O']={x:Math.sqrt(3)/2,y:-1.5,el:'O'};
+ P.s1={x:-Math.sqrt(3)/2-Math.cos(30*D)*.7,y:-.5+Math.sin(30*D)*.7};P.s2={x:Math.sqrt(3)/2+Math.cos(30*D)*.7,y:-.5+Math.sin(30*D)*.7};
+ B.push(['0N','0CA','bb'],['0CA','0C','bb'],['0C','0O','bb'],['0N','s1','stub'],['0C','s2','stub']);
+ const M=newMeta(); addSide(c,P,B,'0',1,M); return {P,B,labels:[],M};
+}
+function peptideModel(seq){
+ const P={},B=[],S=Math.sqrt(3)/2,M=newMeta();
+ seq.forEach((c,i)=>{const f=i%2?-1:1;const ca={x:i*2*S*1.5,y:i%2?-.5:0};const p=i+'';
+  P[p+'CA']={...ca,el:'C'};P[p+'N']={x:ca.x-S,y:ca.y-.5*f,el:'N'};P[p+'C']={x:ca.x+S,y:ca.y-.5*f,el:'C'};P[p+'O']={x:ca.x+S,y:(seq[i+1]==='P'||c==='P')?ca.y-.5*f-1:ca.y-1.5*f,el:'O'};
+  B.push([p+'N',p+'CA','bb'],[p+'CA',p+'C','bb'],[p+'C',p+'O','bb']); if(i>0)B.push([(i-1)+'C',p+'N','bb']);
+  addSide(c,P,B,p,f,M);});
+ const n=seq.length-1,fl=n%2?-1:1;
+ const N0=P['0N'],Cn=P[n+'C'];
+ P.ns={x:N0.x-Math.cos(30*D)*.8,y:N0.y+Math.sin(30*D)*.8};P.cs={x:Cn.x+Math.cos(30*D)*.8,y:Cn.y+Math.sin(30*fl*D)*.8};
+ B.push(['0N','ns','stub'],[n+'C','cs','stub']);
+ return {P,B,M,labels:[{x:P.ns.x-.35,y:P.ns.y+.55,t:'N'},{x:P.cs.x+.3,y:P.cs.y+.15,t:'C'}]};
+}
+
+/* line formula (skeletal), as on the lecture slides */
+const VAL={C:4,N:3,O:2,S:2};
+function svgSkel(model,{pad=1}={}){
+ const {P,B,labels,M}=model; const s=40;
+ const isLab=k=>P[k].el&&P[k].el!=='C';
+ const ord=(a,b)=>M.dbl.has(a+'|'+b)||M.dbl.has(b+'|'+a)?2:1;
+ const nb={};Object.keys(P).forEach(k=>{if(P[k].el)nb[k]=[]});
+ for(const [a,b,kd] of B){const o=kd==='stub'?1:ord(a,b);nb[a].push({k:b,o});if(kd!=='stub')nb[b].push({k:a,o});}
+ const X=v=>(v*s).toFixed(1);
+ const L=(a,b,w=2.2,extra='')=>`<line class="skb" x1="${X(a.x)}" y1="${X(a.y)}" x2="${X(b.x)}" y2="${X(b.y)}" stroke-width="${w}" stroke-linecap="round" ${extra}/>`;
+ let out='';
+ for(const [a,b,kd] of B){
+  const A=P[a],Bp=P[b]; let dx=Bp.x-A.x,dy=Bp.y-A.y; const len=Math.hypot(dx,dy); const u={x:dx/len,y:dy/len}; const n={x:-u.y,y:u.x};
+  const sa=isLab(a)?.27:0, sb=P[b].el&&isLab(b)?.27:0;
+  const p1={x:A.x+u.x*sa,y:A.y+u.y*sa},p2={x:Bp.x-u.x*sb,y:Bp.y-u.y*sb};
+  if(kd==='stub'){out+=L(p1,p2,1.8,'stroke-dasharray="1 6"');continue;}
+  const w=M.wedge.find(x=>x[0]===a&&x[1]===b);
+  if(w){
+   if(w[2]==='hash'){for(let i=1;i<=7;i++){const t=i/7.5;const c={x:p1.x+(p2.x-p1.x)*t,y:p1.y+(p2.y-p1.y)*t};const hw=.03+.11*t;out+=L({x:c.x-n.x*hw,y:c.y-n.y*hw},{x:c.x+n.x*hw,y:c.y+n.y*hw},1.7);}}
+   else out+=`<polygon class="skf" points="${X(p1.x)},${X(p1.y)} ${X(p2.x+n.x*.13)},${X(p2.y+n.y*.13)} ${X(p2.x-n.x*.13)},${X(p2.y-n.y*.13)}"/>`;
+   continue;
+  }
+  if(ord(a,b)===2){
+   const r=M.rings.find(r=>r.keys.includes(a)&&r.keys.includes(b));
+   if(r){const m={x:(A.x+Bp.x)/2,y:(A.y+Bp.y)/2};const sg=(n.x*(r.c.x-m.x)+n.y*(r.c.y-m.y))>0?1:-1;const o=.17*sg;
+    out+=L(p1,p2);out+=L({x:p1.x+u.x*.16+n.x*o,y:p1.y+u.y*.16+n.y*o},{x:p2.x-u.x*.16+n.x*o,y:p2.y-u.y*.16+n.y*o});}
+   else{const o=.07;out+=L({x:p1.x+n.x*o,y:p1.y+n.y*o},{x:p2.x+n.x*o,y:p2.y+n.y*o})+L({x:p1.x-n.x*o,y:p1.y-n.y*o},{x:p2.x-n.x*o,y:p2.y-n.y*o});}
+  }else out+=L(p1,p2);
+ }
+ const T=(x,y,t,a='middle',fs=19)=>`<text x="${X(x)}" y="${X(y)}" font-size="${fs}" text-anchor="${a}" dominant-baseline="central">${t}</text>`;
+ const pts=[];
+ for(const k in nb){ if(!isLab(k))continue; const A=P[k];
+  const chg=M.chg[k]||0; const h=VAL[A.el]+chg-nb[k].reduce((t,x)=>t+x.o,0);
+  let vx=0,vy=0; nb[k].forEach(({k:o})=>{const d=Math.hypot(P[o].x-A.x,P[o].y-A.y);vx-=(P[o].x-A.x)/d;vy-=(P[o].y-A.y)/d;});
+  if(Math.hypot(vx,vy)<.01){vx=1;vy=0;}
+  out+=T(A.x,A.y,A.el); pts.push(A);
+  let cx=A.x+.3,cy=A.y-.32;
+  if(h>0){const sub=h>1?`<tspan font-size="12" dy="4">${h}</tspan>`:'';
+   if(Math.abs(vx)>=Math.abs(vy)*.9){ if(vx>0){out+=T(A.x+.19,A.y,'H'+sub,'start');cx=A.x+.19+(h>1?.6:.42);pts.push({x:A.x+.9,y:A.y});}
+     else{out+=T(A.x-.19,A.y,'H'+sub,'end');pts.push({x:A.x-.9,y:A.y});} }
+   else if(vy<0){out+=T(A.x,A.y-.44,'H'+sub);pts.push({x:A.x,y:A.y-.5});cx=A.x+(h>1?.48:.36);cy=A.y-.5;}
+   else{out+=T(A.x,A.y+.46,'H'+sub);pts.push({x:A.x,y:A.y+.55});cy=A.y-.32;}
+  }
+  if(chg&&h<=0){const vl=Math.hypot(vx,vy);cx=A.x+vx/vl*.38;cy=A.y+vy/vl*.38-.1;}
+  if(chg){out+=T(cx,cy,chg>0?'⊕':'⊖','middle',13);pts.push({x:cx+.15,y:cy-.15});}
+ }
+ const lab=labels.map(l=>T(l.x,l.y-.25,l.t,'middle',22)).join('');
+ const all=Object.values(P).filter(p=>p.el).concat(labels,pts);
+ const x0=Math.min(...all.map(p=>p.x))-pad,x1=Math.max(...all.map(p=>p.x))+pad,y0=Math.min(...all.map(p=>p.y))-pad,y1=Math.max(...all.map(p=>p.y))+pad;
+ return `<svg class="sk" viewBox="${x0*s} ${y0*s} ${(x1-x0)*s} ${(y1-y0)*s}" role="img" aria-label="line formula" preserveAspectRatio="xMidYMid meet">${out}${lab}</svg>`;
+}
+let FMT=null;
+const draw=(model,o={})=>FMT==='line'?svgSkel(model,{pad:o.pad?o.pad+.15:.85}):svg(model,o);
+
+function svg(model,{fade=false,pad=.7}={}){
+ const {P,B,labels}=model; const s=40;
+ const pts=Object.values(P).filter(p=>p.el).concat(labels);
+ let x0=Math.min(...pts.map(p=>p.x))-pad,x1=Math.max(...pts.map(p=>p.x))+pad,y0=Math.min(...pts.map(p=>p.y))-pad,y1=Math.max(...pts.map(p=>p.y))+pad;
+ const W=.27*s,O=.39*s;
+ const ln=(a,b,cls,w)=>`<line class="${cls}" x1="${(a.x*s).toFixed(1)}" y1="${(a.y*s).toFixed(1)}" x2="${(b.x*s).toFixed(1)}" y2="${(b.y*s).toFixed(1)}" stroke-width="${w}" stroke-linecap="round"/>`;
+ const layer=kind=>{let o='',c='';for(const [a,b,kd] of B){if(kd!==kind)continue;const A=P[a],Bp=P[b];const m={x:(A.x+Bp.x)/2,y:(A.y+Bp.y)/2};o+=ln(A,Bp,'ol',O);c+=ln(A,m,'e'+A.el,W)+ln(m,Bp,'e'+Bp.el,W);}return o+c;};
+ let stubs='';for(const [a,b,kd] of B)if(kd==='stub')stubs+=`<line class="stub" x1="${P[a].x*s}" y1="${P[a].y*s}" x2="${P[b].x*s}" y2="${P[b].y*s}" stroke-width="3" stroke-dasharray="4 5" stroke-linecap="round"/>`;
+ const lab=labels.map(l=>`<text x="${l.x*s}" y="${l.y*s}" font-size="24" text-anchor="middle">${l.t}</text>`).join('');
+ return `<svg viewBox="${x0*s} ${y0*s} ${(x1-x0)*s} ${(y1-y0)*s}" role="img" aria-label="stick model" preserveAspectRatio="xMidYMid meet">${stubs}<g opacity="${fade?.4:1}">${layer('bb')}</g><g>${layer('sc')}</g>${lab}</svg>`;
+}
+
+/* storage */
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+/* tabs */
+document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{
+ document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));
+ ['learn','id','pep'].forEach(p=>document.getElementById('p-'+p).hidden=p!==b.dataset.p);
+ store.set('aatab',b.dataset.p);
+}));
+
+/* learn */
+const groupsEl=document.getElementById('groups');
+function renderLearn(){groupsEl.innerHTML=GROUPS.map(g=>`<div class="group"><div class="ghead"><span class="tag">${g.id}</span><h2>${g.title}</h2><small>${g.sub}</small></div><div class="grid">${
+ [...g.id].map(c=>`<button type="button" class="card" data-c="${c}"><div class="reveal">${draw(residueModel(c),{fade:true})}</div><span class="nm">${AA[c].n}</span><span class="cd">${AA[c].t} · ${c}</span><span class="tapnote">Draw it, then tap to check</span><span class="hint reveal">${AA[c].h}</span></button>`).join('')}</div></div>`).join('');}
+const hideT=document.getElementById('hideToggle');
+hideT.addEventListener('change',()=>{groupsEl.classList.toggle('hide',hideT.checked);groupsEl.querySelectorAll('.card').forEach(c=>c.classList.remove('open'));});
+groupsEl.addEventListener('click',e=>{const c=e.target.closest('.card');if(c&&groupsEl.classList.contains('hide'))c.classList.toggle('open');});
+
+/* identify */
+let W={},cur=null,last=null,sess={n:0,ok:0};
+const wKey=()=>FMT==='line'?'aawL':'aaw';
+const wOf=c=>W[c]??1;
+function pick(){let tot=0;CODES.forEach(c=>{if(c!==last)tot+=wOf(c)});let r=Math.random()*tot;for(const c of CODES){if(c===last)continue;r-=wOf(c);if(r<=0)return c;}return CODES[0];}
+const ansEl=document.getElementById('answers');
+ansEl.innerHTML=GROUPS.map(g=>`<div class="arow"><span class="lab">${g.title.toUpperCase()}</span>${[...g.id].map(c=>`<button class="ab" data-c="${c}">${c} ${AA[c].t}</button>`).join('')}</div>`).join('');
+function stats(){const weak=CODES.filter(c=>wOf(c)>1.2).sort((a,b)=>wOf(b)-wOf(a)).slice(0,4).map(c=>AA[c].t);
+ document.getElementById('idStats').textContent=`This session: ${sess.ok}/${sess.n} correct`+(weak.length?` · Needs work: ${weak.join(', ')}`:'');}
+function nextId(){cur=pick();last=cur;document.getElementById('idStage').innerHTML=draw(residueModel(cur));
+ document.getElementById('idFb').textContent='Which amino acid is this?';
+ ansEl.querySelectorAll('.ab').forEach(b=>{b.disabled=false;b.className='ab'});stats();}
+ansEl.addEventListener('click',e=>{const b=e.target.closest('.ab');if(!b||b.disabled)return;const c=b.dataset.c;sess.n++;
+ ansEl.querySelectorAll('.ab').forEach(x=>x.disabled=true);
+ ansEl.querySelector(`[data-c="${cur}"]`).classList.add('right');
+ const fb=document.getElementById('idFb');
+ if(c===cur){sess.ok++;W[cur]=Math.max(.4,wOf(cur)*.7);fb.innerHTML=`<span class="y">Correct.</span> ${AA[cur].n}: ${AA[cur].h}`;}
+ else{b.classList.add('wrong');W[cur]=Math.min(6,wOf(cur)*2+.5);W[c]=Math.min(6,wOf(c)+.3);fb.innerHTML=`<span class="n">It's ${AA[cur].n} (${AA[cur].t}, ${cur}).</span> ${AA[cur].h} You chose ${AA[c].t}: ${AA[c].h}`;}
+ store.set(wKey(),W);stats();});
+document.getElementById('idNext').addEventListener('click',nextId);
+document.getElementById('idReset').addEventListener('click',()=>{W={};store.set(wKey(),W);sess={n:0,ok:0};nextId();});
+
+/* peptide */
+let seq=[];
+function drawPep(){const n=seq.length;const st=document.getElementById('pepStage');st.innerHTML=draw(peptideModel(seq),{pad:.9});st.style.minWidth=n>6?'640px':(n>4?'460px':'0');}
+function newPep(){const n=+document.getElementById('pepLen').value;/* Pro only at even positions: its ring can't be drawn cleanly on the other zigzag phase */
+ seq=Array.from({length:n},(_,i)=>{let c;do{c=CODES[Math.floor(Math.random()*20)]}while(c==='P'&&i%2);return c;});
+ drawPep();
+ document.getElementById('pepIn').value='';document.getElementById('pepFb').textContent='';document.getElementById('pepChips').innerHTML='';}
+function parse(s){const parts=s.trim().split(/[\s\-–,.]+/).filter(Boolean);
+ if(parts.length>1&&parts.every(p=>p.length===3))return parts.map(p=>BY3[p.toLowerCase()]||'?');
+ return s.toUpperCase().replace(/[^A-Z]/g,'').split('');}
+document.getElementById('pepForm').addEventListener('submit',e=>{e.preventDefault();const g=parse(document.getElementById('pepIn').value);
+ let ok=0;document.getElementById('pepChips').innerHTML=seq.map((c,i)=>{const y=g[i]===c;if(y)ok++;return `<span class="chip ${y?'y':'n'}">${i+1}. ${AA[c].t}${y?'':' (you: '+(g[i]&&AA[g[i]]?AA[g[i]].t:'–')+')'}</span>`}).join('');
+ document.getElementById('pepFb').innerHTML=ok===seq.length?`<span class="y">All ${ok} correct.</span> ${seq.join('')}`:`<span class="n">${ok}/${seq.length} correct.</span> Answer N→C: ${seq.join('')}`;});
+document.getElementById('pepNew').addEventListener('click',newPep);
+document.getElementById('pepLen').addEventListener('change',newPep);
+
+function setFmt(f,first){FMT=f;store.set('aafmt',f);
+ document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.f===f));
+ document.querySelectorAll('[data-for]').forEach(el=>el.hidden=el.dataset.for!==f);
+ W=store.get(wKey(),{});sess={n:0,ok:0};
+ renderLearn();groupsEl.classList.toggle('hide',hideT.checked);
+ if(first){nextId();newPep();}else{document.getElementById('idStage').innerHTML=draw(residueModel(cur));stats();drawPep();}}
+document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>setFmt(b.dataset.f)));
+setFmt(store.get('aafmt','line'),true);
+const t=store.get('aatab','learn');const tb=document.querySelector(`.tabs [data-p="${t}"]`);if(tb&&t!=='learn')tb.click();
+</script>
+
+</body>
+</html>
