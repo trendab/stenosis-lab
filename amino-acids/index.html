@@ -61,6 +61,7 @@ details.box summary{cursor:pointer;font-family:var(--f-display);font-weight:700;
 .card .cd{font-family:var(--f-mono);font-size:.85rem;color:var(--muted)}
 .card .hint{font-size:.85rem;color:var(--muted)}
 .hide .card{cursor:pointer}
+.hide .card:not(.open) .reveal .facts{display:none}
 .hide .card:not(.open) .reveal{visibility:hidden}
 .hide .card:not(.open) .tapnote{display:block}
 .tapnote{display:none;font-size:.8rem;color:var(--accent)}
@@ -93,6 +94,20 @@ svg .eC{stroke:var(--eC)} svg .eN{stroke:var(--eN)} svg .eO{stroke:var(--eO)} sv
 .seg button{border:0;background:transparent;color:var(--fg);font:700 .9rem var(--f-body);padding:8px 12px;border-radius:7px;cursor:pointer}
 .seg button small{font-weight:400;color:var(--muted);margin-left:4px}
 .seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.facts{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:5px;font-size:.82rem;line-height:1.35}
+.facts b{font-family:var(--f-mono);font-size:.68rem;color:var(--accent);letter-spacing:.06em;margin-right:4px}
+.src{font-size:.66rem;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 4px;margin-left:3px;white-space:nowrap;font-family:var(--f-body)}
+.gfacts{margin:0;padding-left:1.1em;font-size:.9rem;display:flex;flex-direction:column;gap:3px}
+.card{cursor:default}
+.tscroll{overflow-x:auto;margin-top:12px}
+table.pka{border-collapse:collapse;font-size:.9rem;font-variant-numeric:tabular-nums}
+table.pka caption{text-align:left;font-weight:700;padding-bottom:6px}
+table.pka td{padding:4px 14px 4px 0;border-top:1px solid var(--line)}
+table.pka td+td{font-family:var(--f-mono);font-weight:700;text-align:right}
+.qcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.qtag{font-family:var(--f-mono);font-size:.75rem;color:var(--accent);letter-spacing:.08em}
+.qtext{margin:0;font-family:var(--f-display);font-weight:700;font-size:1.25rem;line-height:1.3;text-wrap:balance}
+.fb .more{display:block;margin-top:4px;color:var(--muted);font-size:.88rem}
 svg .skb{stroke:var(--fg)} svg .skf{fill:var(--fg)}
 svg.sk text{font-family:var(--f-body);font-weight:400}
 svg .ol{stroke:var(--stickline)} svg .stub{stroke:var(--stub)} svg text{fill:var(--fg);font-family:var(--f-display);font-weight:700}
@@ -124,10 +139,33 @@ svg .ol{stroke:var(--stickline)} svg .stub{stroke:var(--stub)} svg text{fill:var
   <nav class="tabs" role="tablist">
     <button role="tab" id="t-learn" aria-selected="true" data-p="learn">Learn</button>
     <button role="tab" id="t-id" aria-selected="false" data-p="id">Identify</button>
-    <button role="tab" id="t-pep" aria-selected="false" data-p="pep">Read a peptide</button>
+    <button role="tab" id="t-pep" aria-selected="false" data-p="pep">Peptide</button>
+    <button role="tab" id="t-facts" aria-selected="false" data-p="facts">Facts</button>
   </nav>
 
   <section class="panel" id="p-learn">
+    <details class="box">
+      <summary>Rules from the slides</summary>
+      <ul class="key">
+        <li>Proteinogenic amino acids are L. Bike mnemonic: R under the saddle; amino group right → L, left → D. <span class="src">notes</span></li>
+        <li>The wedges define the configuration at Cα only, not at Cβ. <span class="src">slide</span></li>
+        <li>Side chain drawn down from Cα → for L it points behind the page (hashed wedge). <span class="src">notes</span></li>
+        <li>Locher always draws the ionised form: at physiological pH the amino group is NH₃⁺ (COO⁻ on the slide). <span class="src">notes</span></li>
+        <li>Henderson–Hasselbalch: pH = pKa + log([A⁻]/[HA]). <span class="src">slide</span></li>
+        <li>pKa depends on temperature, ionic strength and microenvironment. In a folded protein the base can't escape, so the local pKa can be very different. <span class="src">slide + notes</span></li>
+      </ul>
+      <div class="tscroll"><table class="pka">
+        <caption>Typical pKa of ionisable groups <span class="src">slide, Table 2.1</span></caption>
+        <tr><td>Terminal α-carboxyl</td><td>3.1</td></tr>
+        <tr><td>Asp, Glu</td><td>4.1</td></tr>
+        <tr><td>His</td><td>6.0</td></tr>
+        <tr><td>Terminal α-amino</td><td>8.0</td></tr>
+        <tr><td>Cys</td><td>8.3</td></tr>
+        <tr><td>Tyr</td><td>10.0</td></tr>
+        <tr><td>Lys</td><td>10.4</td></tr>
+        <tr><td>Arg</td><td>12.5</td></tr>
+      </table></div>
+    </details>
     <details class="box" open>
       <summary>How to read a stick model</summary>
       <ol class="key">
@@ -157,6 +195,19 @@ svg .ol{stroke:var(--stickline)} svg .stub{stroke:var(--stub)} svg text{fill:var
     </div>
     <div class="stats" id="idStats"></div>
     <p class="note">Missed ones come back more often. Progress stays in this browser only.</p>
+  </section>
+
+  <section class="panel" id="p-facts" hidden>
+    <div class="row">
+      <label for="fqCat">Topic</label>
+      <select id="fqCat"><option value="all">All</option><option value="o">Name origins</option><option value="p">pKa and charge</option><option value="k">Properties</option></select>
+    </div>
+    <div class="qcard"><span class="qtag" id="fqTag"></span><p class="qtext" id="fqText"></p></div>
+    <div class="fb" id="fqFb" aria-live="polite"></div>
+    <div class="answers" id="fqAnswers"></div>
+    <div class="row"><button class="btn" id="fqNext">Next</button></div>
+    <div class="stats" id="fqStats"></div>
+    <p class="note">Questions use only the slides and the handwritten notes from the 19.10. lecture.</p>
   </section>
 
   <section class="panel" id="p-pep" hidden>
@@ -216,6 +267,40 @@ const EXTRA={
  W:{dbl:[['CG','CD1'],['CD2','CE3'],['CZ3','CH2'],['CZ2','CE2']]}, H:{dbl:[['CG','CD2'],['CE1','NE2']]}
 };
 const CODES=Object.keys(AA);
+/* From the 19.10. deck: o = name origin (slide), p = pKa (slide Table 2.1 + notes), k = [text, 's' slide | 'n' notes] */
+const FACTS={
+ G:{o:'Greek glykys = sweet: glycine tastes sweet.',k:[['Annotated "keine R" in the notes.','n']]},
+ A:{o:'"Al-a-nine": named in the mistaken belief that it contained an aldehyde group.',k:[['R is a methyl group.','n']]},
+ V:{o:'Named after valeric acid: VAL + ine.',k:[]},
+ L:{o:'Greek leukos = white.',k:[]},
+ I:{o:'An isomer of leucine with the same number of atoms.',k:[['Second stereocentre at Cβ: (S). The wedge defines Cα only.','s']]},
+ M:{o:'Me(thyl) + thio (sulfur) + N + ine.',k:[['Contains S, but still quite hydrophobic.','n']]},
+ W:{o:'TRYP(sin) + pep(T)ic enzymes that broke down the source proteins, + "-ophane".',k:[['Indole: 4 × 2 e⁻ + 2 e⁻ from N = 10 delocalised e⁻ → aromatic, flat.','n'],['Most e⁻ → strongest UV absorption of W, F, Y.','n']]},
+ F:{o:'Phenyl group (benzene ring) + alanine.',k:[['Phenyl ring with 6 delocalised e⁻.','n']]},
+ Y:{o:'Greek tyros = cheese: first isolated from cheese.',p:'10.0 (OH ⇌ O⁻). At pH 7 ≈ 1000 : 1 protonated.',k:[['Hydroxyphenyl ring with 6 delocalised e⁻.','n']]},
+ S:{o:'From sericine, a protein that sticks to silk (Latin sericus = silky).',k:[['Hydroxyl group can form H-bonds.','n']]},
+ T:{o:'Resembles the sugar threose; discovered in the 1930s.',k:[['Second stereocentre at Cβ: (R).','s'],['Hydroxyl group can form H-bonds.','n']]},
+ C:{o:'Isolated from urine; the bladder = cyst.',p:'8.3 (SH ⇌ S⁻).',k:[['Thiol group can form H-bonds.','n']]},
+ D:{o:'Isolated from asparagus.',p:'4.1: negatively charged (COO⁻) at pH 7.',k:[['Carboxyl(ate) group, reactive with metals.','n']]},
+ N:{o:'Isolated from asparagus.',k:[['Carboxamide: many H-bonds and interactions with positive parts.','n']]},
+ E:{o:'Named after gluten, a wheat protein.',p:'4.1: negatively charged (COO⁻) at pH 7.',k:[['Carboxylate: one of the "4 Geschwister".','n']]},
+ Q:{o:'Named after gluten, a wheat protein.',k:[['Carboxamide: many H-bonds and interactions with positive parts.','n']]},
+ K:{o:'Isolated from tissues undergoing lysis (liquefaction).',p:'10.4 (NH₃⁺ ⇌ NH₂): positive at pH 7.',k:[['Charged; binds negatively charged particles; H-bonds.','n'],['Code K is marked "!" in the notes.','n']]},
+ R:{o:'Greek argyros = silver: crystals looked like shiny white silver.',p:'12.5: positive at pH 7.',k:[['Guanidinium group; pKa very high because of the positive charge.','n'],['Code R is marked "!" in the notes.','n']]},
+ H:{o:'Isolated from tissues (histology).',p:'6.0. At pH 7: 7 = 6 + log 10 → deprotonated : protonated ≈ 10 : 1.',k:[['Imidazole: aromatic (6 e⁻), but stacks less well; hydrophilic → H-bonds.','n'],['Binds almost anything, e.g. Cu.','n'],['"Functional amino acid": protonation/deprotonation near pH 7.','n']]},
+ P:{o:'P(yr)ROL(ring) + ine.',k:[['Only amino acid whose R binds both Cα and the backbone N → rigid.','n'],['Not aromatic, not flat.','n']]}
+};
+const GFACTS={
+ GAVLIM:[['Aliphatic: open hydrocarbon chains, no rings.','s'],['Hydrophobic, cannot carry charges.','n']],
+ WFY:[['Aromatic: delocalised e⁻ absorb UV (e⁻ lifted to a higher level).','s'],['UV absorption is used for protein purification','s'],['… and identification.','n'],['Quite hydrophobic; cation–π interactions; aromatic stacking; H-bonds.','n']],
+ STC:[['Polar groups with a dipole moment.','n'],['Hydroxyl and thiol groups can form H-bonds.','n']],
+ DNEQ:[['"4 Geschwister": carboxylate (D, E) and carboxamide (N, Q).','n'],['D, E: pKa 4.1, charged at pH 7.','s']],
+ KR:[['Charged (positive) amino acids.','n'],['Bind negatively charged particles; H-bonds.','n']],
+ HP:[['His: "functional amino acid", pKa 6.','n'],['Pro: R closes onto the backbone → rigid.','n']]
+};
+const SRC={s:'slide',n:'notes'};
+const factsHTML=c=>{const f=FACTS[c];return `<ul class="facts">${f.o?`<li><b>NAME</b>${f.o}</li>`:''}${f.p?`<li><b>pKa</b>${f.p}</li>`:''}${f.k.map(([t,s])=>`<li>${t} <span class="src">${SRC[s]}</span></li>`).join('')}</ul>`;};
+const factsLine=c=>{const f=FACTS[c];return [f.o,f.p?'pKa '+f.p:'',...f.k.map(x=>x[0])].filter(Boolean).join(' · ');};
 const BY3={};CODES.forEach(c=>BY3[AA[c].t.toLowerCase()]=c);
 
 function addSide(c,P,B,pre,f,M){
@@ -345,17 +430,18 @@ const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v)
 /* tabs */
 document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{
  document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));
- ['learn','id','pep'].forEach(p=>document.getElementById('p-'+p).hidden=p!==b.dataset.p);
+ ['learn','id','pep','facts'].forEach(p=>document.getElementById('p-'+p).hidden=p!==b.dataset.p);
  store.set('aatab',b.dataset.p);
 }));
 
 /* learn */
 const groupsEl=document.getElementById('groups');
-function renderLearn(){groupsEl.innerHTML=GROUPS.map(g=>`<div class="group"><div class="ghead"><span class="tag">${g.id}</span><h2>${g.title}</h2><small>${g.sub}</small></div><div class="grid">${
- [...g.id].map(c=>`<button type="button" class="card" data-c="${c}"><div class="reveal">${draw(residueModel(c),{fade:true})}</div><span class="nm">${AA[c].n}</span><span class="cd">${AA[c].t} · ${c}</span><span class="tapnote">Draw it, then tap to check</span><span class="hint reveal">${AA[c].h}</span></button>`).join('')}</div></div>`).join('');}
+function renderLearn(){groupsEl.innerHTML=GROUPS.map(g=>`<div class="group"><div class="ghead"><span class="tag">${g.id}</span><h2>${g.title}</h2><small>${g.sub}</small></div><ul class="gfacts">${(GFACTS[g.id]||[]).map(([t,s])=>`<li>${t} <span class="src">${SRC[s]}</span></li>`).join('')}</ul><div class="grid">${
+ [...g.id].map(c=>`<div class="card" data-c="${c}" tabindex="0"><div class="reveal">${draw(residueModel(c),{fade:true})}</div><span class="nm">${AA[c].n}</span><span class="cd">${AA[c].t} · ${c}</span><span class="tapnote">Draw it, then tap to check</span><span class="hint reveal">${AA[c].h}</span><div class="reveal">${factsHTML(c)}</div></div>`).join('')}</div></div>`).join('');}
 const hideT=document.getElementById('hideToggle');
 hideT.addEventListener('change',()=>{groupsEl.classList.toggle('hide',hideT.checked);groupsEl.querySelectorAll('.card').forEach(c=>c.classList.remove('open'));});
 groupsEl.addEventListener('click',e=>{const c=e.target.closest('.card');if(c&&groupsEl.classList.contains('hide'))c.classList.toggle('open');});
+groupsEl.addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&(e.key==='Enter'||e.key===' ')&&groupsEl.classList.contains('hide')){e.preventDefault();c.classList.toggle('open');}});
 
 /* identify */
 let W={},cur=null,last=null,sess={n:0,ok:0};
@@ -373,11 +459,48 @@ ansEl.addEventListener('click',e=>{const b=e.target.closest('.ab');if(!b||b.disa
  ansEl.querySelectorAll('.ab').forEach(x=>x.disabled=true);
  ansEl.querySelector(`[data-c="${cur}"]`).classList.add('right');
  const fb=document.getElementById('idFb');
- if(c===cur){sess.ok++;W[cur]=Math.max(.4,wOf(cur)*.7);fb.innerHTML=`<span class="y">Correct.</span> ${AA[cur].n}: ${AA[cur].h}`;}
- else{b.classList.add('wrong');W[cur]=Math.min(6,wOf(cur)*2+.5);W[c]=Math.min(6,wOf(c)+.3);fb.innerHTML=`<span class="n">It's ${AA[cur].n} (${AA[cur].t}, ${cur}).</span> ${AA[cur].h} You chose ${AA[c].t}: ${AA[c].h}`;}
+ if(c===cur){sess.ok++;W[cur]=Math.max(.4,wOf(cur)*.7);fb.innerHTML=`<span class="y">Correct.</span> ${AA[cur].n}: ${AA[cur].h}<span class="more">${factsLine(cur)}</span>`;}
+ else{b.classList.add('wrong');W[cur]=Math.min(6,wOf(cur)*2+.5);W[c]=Math.min(6,wOf(c)+.3);fb.innerHTML=`<span class="n">It's ${AA[cur].n} (${AA[cur].t}, ${cur}).</span> ${AA[cur].h} You chose ${AA[c].t}: ${AA[c].h}<span class="more">${AA[cur].t}: ${factsLine(cur)}</span>`;}
  store.set(wKey(),W);stats();});
 document.getElementById('idNext').addEventListener('click',nextId);
 document.getElementById('idReset').addEventListener('click',()=>{W={};store.set(wKey(),W);sess={n:0,ok:0};nextId();});
+
+/* facts quiz */
+const FQ=[];
+{const byO={};CODES.forEach(c=>{const o=FACTS[c].o;(byO[o]=byO[o]||[]).push(c);});
+ Object.entries(byO).forEach(([o,a])=>FQ.push({cat:'o',q:o,a}));}
+[['Side-chain pKa 6.0',['H']],['Side-chain pKa 12.5',['R']],['Side-chain pKa 10.4',['K']],['Side-chain pKa 10.0',['Y']],['Side-chain pKa 8.3',['C']],['Side-chain pKa 4.1',['D','E']],
+ ['Negatively charged side chain at pH 7',['D','E']],['Positively charged side chain at pH 7',['K','R']],
+ ['At pH 7 about 10 : 1 deprotonated : protonated',['H']],['At pH 7 about 1000 : 1 protonated (pKa 10)',['Y']]
+].forEach(([q,a])=>FQ.push({cat:'p',q,a}));
+[['Only amino acid whose R binds both Cα and the backbone N, so it is rigid',['P']],['R is only H: no Cβ, not chiral',['G']],
+ ['Second stereocentre at Cβ with (S) configuration',['I']],['Second stereocentre at Cβ with (R) configuration',['T']],
+ ['Contains S, but still quite hydrophobic',['M']],['Thiol side chain',['C']],['Methyl side chain',['A']],
+ ['Indole ring with 10 delocalised e⁻; strongest UV absorber',['W']],['Hydroxyphenyl ring',['Y']],['Phenyl ring',['F']],
+ ['Imidazole ring; binds almost anything, e.g. Cu',['H']],['Aromatic, but stacks less well and is hydrophilic',['H']],
+ ['Guanidinium group',['R']],['Carboxamide side chain: many H-bonds',['N','Q']],['Carboxyl(ate) group reactive with metals (notes on Asp)',['D']],
+ ['"Functional amino acid": protonation/deprotonation near pH 7',['H']],['Not aromatic, not flat',['P']],
+ ['One-letter code K (marked "!" in the notes)',['K']],['One-letter code R (marked "!" in the notes)',['R']]
+].forEach(([q,a])=>FQ.push({cat:'k',q,a}));
+const CATN={o:'NAME ORIGIN',p:'pKa AND CHARGE',k:'PROPERTY'};
+const fqAns=document.getElementById('fqAnswers');
+fqAns.innerHTML=ansEl.innerHTML;
+let fq=null,fqLast=null,fqS={n:0,ok:0};
+function fqNext(){const cat=document.getElementById('fqCat').value;const pool=FQ.filter(x=>(cat==='all'||x.cat===cat)&&x!==fqLast);
+ fq=pool[Math.floor(Math.random()*pool.length)];fqLast=fq;
+ document.getElementById('fqTag').textContent=CATN[fq.cat]+(fq.a.length>1?' · '+fq.a.length+' answers, either counts':'');
+ document.getElementById('fqText').textContent=fq.q;document.getElementById('fqFb').textContent='Which amino acid?';
+ fqAns.querySelectorAll('.ab').forEach(b=>{b.disabled=false;b.className='ab'});
+ document.getElementById('fqStats').textContent=`This session: ${fqS.ok}/${fqS.n} correct`;}
+fqAns.addEventListener('click',e=>{const b=e.target.closest('.ab');if(!b||b.disabled)return;const c=b.dataset.c;fqS.n++;
+ fqAns.querySelectorAll('.ab').forEach(x=>x.disabled=true);fq.a.forEach(a=>fqAns.querySelector(`[data-c="${a}"]`).classList.add('right'));
+ const names=fq.a.map(a=>`${AA[a].n} (${a})`).join(' / ');const fb=document.getElementById('fqFb');
+ if(fq.a.includes(c)){fqS.ok++;fb.innerHTML=`<span class="y">Correct: ${names}.</span><span class="more">${factsLine(c)}</span>`;}
+ else{b.classList.add('wrong');fb.innerHTML=`<span class="n">It's ${names}.</span><span class="more">${factsLine(fq.a[0])}</span>`;}
+ document.getElementById('fqStats').textContent=`This session: ${fqS.ok}/${fqS.n} correct`;});
+document.getElementById('fqNext').addEventListener('click',fqNext);
+document.getElementById('fqCat').addEventListener('change',fqNext);
+fqNext();
 
 /* peptide */
 let seq=[];
