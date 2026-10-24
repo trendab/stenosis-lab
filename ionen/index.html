@@ -148,7 +148,7 @@ table.pat .fx{font-size:1.15rem}
       </select>
     </div>
     <div class="roundbar">
-      <button class="btn" id="qStart">Runde mit 10 starten</button>
+      <button class="btn" id="qStart">Runde mit allen <span class="rn"></span> starten</button>
       <span class="rprog" id="qProg">Freies Üben</span>
     </div>
     <div class="result" id="qResult" hidden>
@@ -166,13 +166,13 @@ table.pat .fx{font-size:1.15rem}
       <button class="btn ghost" id="qReset">Fortschritt zurücksetzen</button>
     </div>
     <div class="stats" id="qStats"></div>
-    <p class="note">Freies Üben: Fehler kommen öfter wieder. Eine Runde zeigt 10 verschiedene Ionen.</p>
+    <p class="note">Freies Üben: Fehler kommen öfter wieder. Eine Runde fragt jedes Ion genau einmal ab, in zufälliger Reihenfolge.</p>
   </section>
 
   <!-- BAUEN -->
   <section class="panel" id="p-build" hidden>
     <div class="roundbar">
-      <button class="btn" id="bStart">Runde mit 10 starten</button>
+      <button class="btn" id="bStart">Runde mit allen <span class="rn"></span> starten</button>
       <span class="rprog" id="bProg">Freies Üben</span>
     </div>
     <div class="result" id="bResult" hidden>
@@ -219,6 +219,8 @@ const IONS=[
  {n:'Dihydrogenphosphat',t:['H2','P','O4','-'],fam:'P'},
  {n:'Ammonium',t:['N','H4','+'],fam:'N'},
 ];
+const N=IONS.length;
+document.querySelectorAll('.rn').forEach(e=>e.textContent=N);
 const CHG=['+','-','2-','3-'];
 const isChg=x=>CHG.includes(x);
 const sup=c=>`<sup class="${c.includes('+')?'p':'m'}">${c.replace('-','−')}</sup>`;
@@ -271,25 +273,25 @@ function nameOptions(ion){const same=shuffle(IONS.filter(i=>i.fam===ion.fam&&i!=
 let newIdx=-1;
 function getRank(){return store.get('ionrank',[]);}
 function renderRank(){const r=getRank();const t=$('rankTable');
- t.innerHTML=r.length?'<tr><th>#</th><th>Name</th><th>Score</th><th>Zeit</th><th>Modus</th><th>Datum</th></tr>'+r.map((e,i)=>`<tr class="${i===newIdx?'new':''}"><td>${i+1}</td><td class="nm"></td><td class="pct">${e.pct}%</td><td>${fmtTime(e.ms)}</td><td>${e.mode}</td><td>${e.date.slice(5).split('-').reverse().join('.')}</td></tr>`).join(''):'<tr><td>Noch keine Runden gespeichert.</td></tr>';
+ t.innerHTML=r.length?'<tr><th>#</th><th>Name</th><th>Score</th><th>Zeit</th><th>Modus</th><th>Datum</th></tr>'+r.map((e,i)=>`<tr class="${i===newIdx?'new':''}"><td>${i+1}</td><td class="nm"></td><td class="pct">${e.pct}%${e.n?` <small>(${e.ok}/${e.n})</small>`:""}</td><td>${fmtTime(e.ms)}</td><td>${e.mode}</td><td>${e.date.slice(5).split('-').reverse().join('.')}</td></tr>`).join(''):'<tr><td>Noch keine Runden gespeichert.</td></tr>';
  if(r.length)t.querySelectorAll('td.nm').forEach((td,i)=>td.textContent=r[i].name);}
 function saveRes(res,nameEl,resultEl){const name=nameEl.value.trim()||'Anonym';store.set('ionname',name);
  const entry={...res,name,ts:Date.now()};const r=getRank();r.push(entry);
  r.sort((a,b)=>b.pct-a.pct||a.ms-b.ms||a.ts-b.ts);const kept=r.slice(0,20);store.set('ionrank',kept);
  newIdx=kept.indexOf(entry);resultEl.hidden=true;
  $('rankMsg').textContent=newIdx<0?'Gespeichert, aber nicht in den Top 20.':`Gespeichert: Platz ${newIdx+1}.`;renderRank();}
-function makeRound(){return{active:true,n:0,ok:0,t0:Date.now(),q:shuffle(IONS).slice(0,10)};}
+function makeRound(){return{active:true,n:0,ok:0,t0:Date.now(),q:shuffle(IONS)};}
 function finishRound(R,mode,pfx){const ms=Date.now()-R.t0;R.active=false;
- const res={pct:R.ok*10,ms,mode,date:new Date().toISOString().slice(0,10)};
- $(pfx+'Pct').textContent=res.pct+'%';$(pfx+'Detail').textContent=`${R.ok} von 10 richtig in ${fmtTime(ms)} · ${mode}`;
+ const res={pct:Math.round(R.ok/N*100),ok:R.ok,n:N,ms,mode,date:new Date().toISOString().slice(0,10)};
+ $(pfx+'Pct').textContent=res.pct+'%';$(pfx+'Detail').textContent=`${R.ok} von ${N} richtig in ${fmtTime(ms)} · ${mode}`;
  $(pfx+'Name').value=store.get('ionname','');$(pfx+'Result').hidden=false;
  $(pfx+'Result').scrollIntoView({behavior:'smooth',block:'center'});return res;}
-function progText(R,el){el.textContent=R.active?`Runde: Frage ${Math.min(R.n+1,10)} / 10 · ${R.ok} richtig`:'Freies Üben';el.classList.toggle('on',R.active);}
+function progText(R,el){el.textContent=R.active?`Runde: Frage ${Math.min(R.n+1,N)} / ${N} · ${R.ok} richtig`:'Freies Üben';el.classList.toggle('on',R.active);}
 
 /* quiz */
 const DIRN={nf:'Name → Formel',fn:'Formel → Name',mix:'Gemischt'};
 let qR={active:false},qCur=null,qDirNow='nf',qLast=null,qDone=false,qS={n:0,ok:0},qRes=null;
-function qNext(){if(qR.active&&qR.n>=10)return;
+function qNext(){if(qR.active&&qR.n>=N)return;
  qCur=qR.active?qR.q[qR.n]:pickW(qLast);qLast=qCur.n;qDone=false;
  const d=$('qDir').value;qDirNow=d==='mix'?(Math.random()<.5?'nf':'fn'):d;
  const tx=$('qText');
@@ -304,7 +306,7 @@ $('qAns').addEventListener('click',e=>{const b=e.target.closest('.ab');if(!b||qD
  if(!ok)b.classList.add('wrong');
  $('qFb').innerHTML=ok?'<span class="y">Richtig.</span>':`<span class="n">Falsch.</span> ${qCur.n} = <span class="fx">${fx(qCur.t)}</span>`;
  bump(qCur.n,ok);qS.n++;if(ok)qS.ok++;$('qStats').textContent=`Diese Sitzung: ${qS.ok} / ${qS.n} richtig`;
- if(qR.active){qR.n++;if(ok)qR.ok++;if(qR.n>=10){progText(qR,$('qProg'));qRes=finishRound(qR,DIRN[$('qDir').value],'q');}else progText(qR,$('qProg'));}});
+ if(qR.active){qR.n++;if(ok)qR.ok++;if(qR.n>=N){progText(qR,$('qProg'));qRes=finishRound(qR,DIRN[$('qDir').value],'q');}else progText(qR,$('qProg'));}});
 $('qNext').addEventListener('click',qNext);
 $('qDir').addEventListener('change',()=>{store.set('iondir',$('qDir').value);if(!qR.active)qNext();});
 $('qStart').addEventListener('click',()=>{qR=makeRound();qRes=null;$('qResult').hidden=true;qS={n:0,ok:0};$('qStats').textContent='';qNext();});
@@ -317,7 +319,7 @@ $('bPad').innerHTML=PAD.map(([l,ts])=>`<div class="prow"><span class="lab">${l}<
  +`<div class="prow"><button class="tk op" data-op="back">⌫ Zurück</button><button class="tk op" data-op="clear">Leeren</button></div>`;
 let bR={active:false},bCur=null,bLast=null,bIn=[],bDone=false,bS={n:0,ok:0},bRes=null;
 function bDraw(){const o=$('bOut');o.className='build';o.innerHTML=bIn.length?`<span class="fx">${fx(bIn)}</span>`:'<span class="ph">Tippe die Bausteine in der richtigen Reihenfolge</span>';}
-function bNext(){if(bR.active&&bR.n>=10)return;bCur=bR.active?bR.q[bR.n]:pickW(bLast);bLast=bCur.n;bIn=[];bDone=false;
+function bNext(){if(bR.active&&bR.n>=N)return;bCur=bR.active?bR.q[bR.n]:pickW(bLast);bLast=bCur.n;bIn=[];bDone=false;
  $('bText').textContent=bCur.n;$('bFb').textContent='';bDraw();progText(bR,$('bProg'));}
 $('bPad').addEventListener('click',e=>{const b=e.target.closest('.tk');if(!b||bDone)return;
  if(b.dataset.op==='back')bIn.pop();else if(b.dataset.op==='clear')bIn=[];
@@ -328,7 +330,7 @@ $('bCheck').addEventListener('click',()=>{if(bDone||!bIn.length)return;bDone=tru
  const ok=key(bIn)===key(bCur.t);$('bOut').classList.add(ok?'right':'wrong');
  $('bFb').innerHTML=ok?'<span class="y">Richtig.</span>':`<span class="n">Falsch.</span> Richtig ist <span class="fx">${fx(bCur.t)}</span>`;
  bump(bCur.n,ok);bS.n++;if(ok)bS.ok++;$('bStats').textContent=`Diese Sitzung: ${bS.ok} / ${bS.n} richtig`;
- if(bR.active){bR.n++;if(ok)bR.ok++;progText(bR,$('bProg'));if(bR.n>=10)bRes=finishRound(bR,'Bauen','b');}});
+ if(bR.active){bR.n++;if(ok)bR.ok++;progText(bR,$('bProg'));if(bR.n>=N)bRes=finishRound(bR,'Bauen','b');}});
 $('bNext').addEventListener('click',bNext);
 $('bStart').addEventListener('click',()=>{bR=makeRound();bRes=null;$('bResult').hidden=true;bS={n:0,ok:0};$('bStats').textContent='';bNext();});
 $('bForm').addEventListener('submit',e=>{e.preventDefault();if(!bRes)return;saveRes(bRes,$('bName'),$('bResult'));bRes=null;progText(bR,$('bProg'));});
