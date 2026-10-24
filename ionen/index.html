@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Die 14 Ionen vom Lernblatt: Name und Formel lernen, abfragen und selbst zusammenbauen.">
+<title>Ionen Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Familjen+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0}
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#17212b; --muted:#5a6775; --line:#d7dde4;
+  --accent:#0e6e68; --accent-soft:#dcefed; --ok:#1d7f48; --ok-soft:#dff2e6; --bad:#b8372a; --bad-soft:#f8e1de;
+  --minus:#2c5be3; --plus:#c2410c;
+  --f-display:"Familjen Grotesk","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10151b; --surface:#171e26; --fg:#e6ebf0; --muted:#97a3b0; --line:#2a3440;
+  --accent:#4fc2b8; --accent-soft:#16332f; --ok:#5cc98a; --ok-soft:#173226; --bad:#f07a6c; --bad-soft:#3a1d1a;
+  --minus:#7b9cff; --plus:#fb923c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10151b; --surface:#171e26; --fg:#e6ebf0; --muted:#97a3b0; --line:#2a3440;
+  --accent:#4fc2b8; --accent-soft:#16332f; --ok:#5cc98a; --ok-soft:#173226; --bad:#f07a6c; --bad-soft:#3a1d1a;
+  --minus:#7b9cff; --plus:#fb923c; color-scheme:dark}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px;display:flex;flex-direction:column;gap:18px}
+h1{font-family:var(--f-display);font-weight:700;font-size:1.9rem;line-height:1.1;margin:0;letter-spacing:-.01em}
+h2{font-family:var(--f-display);font-weight:700;font-size:1.15rem;margin:0}
+.sub{color:var(--muted);margin:4px 0 0;font-size:.95rem}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:4px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.tabs button{flex:1;min-width:0;border:0;background:transparent;color:var(--muted);font:700 .92rem var(--f-body);padding:9px 4px;border-radius:7px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--surface)}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.panel{display:flex;flex-direction:column;gap:16px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+details.box summary{cursor:pointer;font-family:var(--f-display);font-weight:700;font-size:1.05rem}
+.key{margin:10px 0 0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px;font-size:.94rem}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.toggle{display:inline-flex;gap:8px;align-items:center;font-size:.92rem;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:left;color:var(--fg);font:inherit;display:flex;flex-direction:column;gap:6px;min-width:0}
+.card .nm{font-weight:700;overflow-wrap:anywhere;hyphens:auto}
+.card .fx{font-size:1.7rem}
+.tapnote{font-size:.8rem;color:var(--accent)}
+.grid.hidef .card,.grid.hiden .card{cursor:pointer}
+.grid.hidef .card:not(.open) .fx,.grid.hiden .card:not(.open) .nm{visibility:hidden}
+.card .tapnote{display:none}
+.grid.hidef .card:not(.open) .tapnote,.grid.hiden .card:not(.open) .tapnote{display:block}
+.fx{font-family:var(--f-mono);font-weight:700;line-height:1.1;white-space:nowrap}
+.fx sub{font-size:.6em;vertical-align:-.35em;line-height:0}
+.fx sup{font-size:.6em;vertical-align:.7em;line-height:0}
+.fx sup.m{color:var(--minus)} .fx sup.p{color:var(--plus)}
+.qcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.qtag{font-family:var(--f-mono);font-size:.75rem;color:var(--accent);letter-spacing:.08em}
+.qtext{margin:0;font-family:var(--f-display);font-weight:700;font-size:1.6rem;line-height:1.25;overflow-wrap:anywhere}
+.qtext.fx{font-size:2.6rem;padding:6px 0}
+.answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ab{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:8px;padding:12px 10px;font:700 1rem var(--f-body);cursor:pointer;min-height:56px;overflow-wrap:anywhere;hyphens:auto}
+.ab.fx{font-family:var(--f-mono);font-size:1.4rem}
+.ab:disabled{cursor:default}
+.ab.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.ab.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.fb{min-height:1.5em;font-size:.95rem}
+.fb .y{color:var(--ok);font-weight:700}.fb .n{color:var(--bad);font-weight:700}
+.btn{border:0;background:var(--accent);color:var(--surface);font:700 .95rem var(--f-body);padding:10px 16px;border-radius:8px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.stats{font-size:.88rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.note{font-size:.88rem;color:var(--muted);margin:0}
+select{font:inherit;padding:7px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+input[type=text]{flex:1;min-width:0;font:700 1rem var(--f-body);padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
+.build{background:var(--bg);border:1px dashed var(--line);border-radius:10px;min-height:76px;width:100%;display:flex;align-items:center;justify-content:center;padding:8px}
+.build .fx{font-size:2.6rem}
+.build .ph{color:var(--muted);font-size:.9rem}
+.build.right{border:1px solid var(--ok);background:var(--ok-soft)}
+.build.wrong{border:1px solid var(--bad);background:var(--bad-soft)}
+.pad{display:flex;flex-direction:column;gap:8px}
+.prow{display:flex;flex-wrap:wrap;gap:6px}
+.prow .lab{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);width:100%;letter-spacing:.06em}
+.tk{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:8px;min-width:52px;height:48px;padding:0 10px;cursor:pointer;font-size:1.25rem}
+.tk.fx{font-family:var(--f-mono);font-weight:700}
+.tk.op{font:700 .9rem var(--f-body);color:var(--accent)}
+.roundbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.rprog{font-family:var(--f-mono);font-weight:700;font-size:.92rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.rprog.on{color:var(--accent)}
+.result{background:var(--accent-soft);border:1px solid var(--accent);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.rscore{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.rscore span{font-family:var(--f-display);font-weight:700;font-size:3rem;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.tscroll{overflow-x:auto}
+table.rank{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
+table.rank th{text-align:left;font-size:.72rem;color:var(--muted);font-weight:700;letter-spacing:.06em;padding:4px 8px 4px 0}
+table.rank td{padding:6px 8px 6px 0;border-top:1px solid var(--line);white-space:nowrap}
+table.rank td.nm{white-space:normal;font-weight:700}
+table.rank tr.new td{background:var(--accent-soft)}
+table.rank td.pct{font-family:var(--f-mono);font-weight:700}
+table.pat{border-collapse:collapse;font-size:.95rem;margin-top:10px}
+table.pat td{padding:5px 14px 5px 0;border-top:1px solid var(--line);vertical-align:middle}
+table.pat .fx{font-size:1.15rem}
+@media (prefers-reduced-motion:no-preference){.ab,.tk,.card,.tabs button{transition:background .15s,border-color .15s}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Ionen</h1>
+    <p class="sub">Die 14 Ionen vom Lernblatt: Name ↔ Formel mit Ladung.</p>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-p="learn">Lernen</button>
+    <button role="tab" aria-selected="false" data-p="quiz">Abfragen</button>
+    <button role="tab" aria-selected="false" data-p="build">Bauen</button>
+  </nav>
+
+  <!-- LERNEN -->
+  <section class="panel" id="p-learn">
+    <details class="box" open>
+      <summary>Muster auf dem Blatt</summary>
+      <ul class="key">
+        <li><b>-at → -it:</b> ein O weniger, gleiche Ladung.</li>
+        <li><b>Hydrogen-:</b> ein H dazu, Ladung eins weniger negativ. <b>Dihydrogen-:</b> zwei H.</li>
+        <li><b>-id:</b> das Element allein (Sulfid, Oxid). Hydroxid ist die Ausnahme: O + H.</li>
+        <li>Ammonium ist das einzige positive Ion auf dem Blatt.</li>
+      </ul>
+      <div class="tscroll"><table class="pat" id="patTable"></table></div>
+    </details>
+    <div class="row">
+      <label class="toggle"><input type="radio" name="hide" value="" checked> Alles zeigen</label>
+      <label class="toggle"><input type="radio" name="hide" value="hidef"> Formeln verdecken</label>
+      <label class="toggle"><input type="radio" name="hide" value="hiden"> Namen verdecken</label>
+    </div>
+    <div class="grid" id="cards"></div>
+  </section>
+
+  <!-- ABFRAGEN -->
+  <section class="panel" id="p-quiz" hidden>
+    <div class="row">
+      <label for="qDir">Richtung</label>
+      <select id="qDir">
+        <option value="nf">Name → Formel</option>
+        <option value="fn">Formel → Name</option>
+        <option value="mix">Gemischt</option>
+      </select>
+    </div>
+    <div class="roundbar">
+      <button class="btn" id="qStart">Runde mit 10 starten</button>
+      <span class="rprog" id="qProg">Freies Üben</span>
+    </div>
+    <div class="result" id="qResult" hidden>
+      <div class="rscore"><span id="qPct">0%</span><small id="qDetail"></small></div>
+      <form class="row" id="qForm">
+        <input type="text" id="qName" maxlength="20" autocomplete="nickname" placeholder="Dein Name" aria-label="Dein Name">
+        <button class="btn" type="submit">In Rangliste speichern</button>
+      </form>
+    </div>
+    <div class="qcard"><span class="qtag" id="qTag"></span><p class="qtext" id="qText"></p></div>
+    <div class="fb" id="qFb" aria-live="polite"></div>
+    <div class="answers" id="qAns"></div>
+    <div class="row">
+      <button class="btn" id="qNext">Weiter</button>
+      <button class="btn ghost" id="qReset">Fortschritt zurücksetzen</button>
+    </div>
+    <div class="stats" id="qStats"></div>
+    <p class="note">Freies Üben: Fehler kommen öfter wieder. Eine Runde zeigt 10 verschiedene Ionen.</p>
+  </section>
+
+  <!-- BAUEN -->
+  <section class="panel" id="p-build" hidden>
+    <div class="roundbar">
+      <button class="btn" id="bStart">Runde mit 10 starten</button>
+      <span class="rprog" id="bProg">Freies Üben</span>
+    </div>
+    <div class="result" id="bResult" hidden>
+      <div class="rscore"><span id="bPct">0%</span><small id="bDetail"></small></div>
+      <form class="row" id="bForm">
+        <input type="text" id="bName" maxlength="20" autocomplete="nickname" placeholder="Dein Name" aria-label="Dein Name">
+        <button class="btn" type="submit">In Rangliste speichern</button>
+      </form>
+    </div>
+    <div class="qcard"><span class="qtag">BAU DIE FORMEL</span><p class="qtext" id="bText"></p></div>
+    <div class="build" id="bOut"><span class="ph">Tippe die Bausteine in der richtigen Reihenfolge</span></div>
+    <div class="pad" id="bPad"></div>
+    <div class="fb" id="bFb" aria-live="polite"></div>
+    <div class="row">
+      <button class="btn" id="bCheck">Prüfen</button>
+      <button class="btn ghost" id="bNext">Weiter</button>
+    </div>
+    <div class="stats" id="bStats"></div>
+    <p class="note">Schwerste Stufe: keine Auswahl, du baust die Formel aus dem Gedächtnis. Die Ladung kommt zuletzt; eine neue Ladung ersetzt die alte.</p>
+  </section>
+
+  <div class="box" id="rankBox">
+    <h2>Rangliste auf diesem Gerät</h2>
+    <div class="tscroll"><table class="rank" id="rankTable"></table></div>
+    <div class="row" style="margin-top:10px"><button class="btn ghost" id="rankClear">Rangliste löschen</button><span class="note" id="rankMsg"></span></div>
+  </div>
+</div>
+
+<script>
+/* Data: exactly the ions on the handwritten sheet. Tokens: element (+index) parts, last = charge. */
+const IONS=[
+ {n:'Nitrat',t:['N','O3','-'],fam:'N'},
+ {n:'Nitrit',t:['N','O2','-'],fam:'N'},
+ {n:'Sulfid',t:['S','2-'],fam:'S'},
+ {n:'Sulfit',t:['S','O3','2-'],fam:'S'},
+ {n:'Sulfat',t:['S','O4','2-'],fam:'S'},
+ {n:'Oxid',t:['O','2-'],fam:'O'},
+ {n:'Hydroxid',t:['O','H','-'],fam:'O'},
+ {n:'Carbonat',t:['C','O3','2-'],fam:'C'},
+ {n:'Hydrogencarbonat',t:['H','C','O3','-'],fam:'C'},
+ {n:'Hydrogensulfat',t:['H','S','O4','-'],fam:'S'},
+ {n:'Hydrogenphosphat',t:['H','P','O4','2-'],fam:'P'},
+ {n:'Phosphat',t:['P','O4','3-'],fam:'P'},
+ {n:'Dihydrogenphosphat',t:['H2','P','O4','-'],fam:'P'},
+ {n:'Ammonium',t:['N','H4','+'],fam:'N'},
+];
+const CHG=['+','-','2-','3-'];
+const isChg=x=>CHG.includes(x);
+const sup=c=>`<sup class="${c.includes('+')?'p':'m'}">${c.replace('-','−')}</sup>`;
+function fx(t){return t.map(x=>isChg(x)?sup(x):x.replace(/(\d)/,'<sub>$1</sub>')).join('');}
+const key=t=>t.join('|');
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const fmtTime=ms=>{const s=Math.round(ms/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
+const $=id=>document.getElementById(id);
+
+/* tabs */
+const PANELS=['learn','quiz','build'];
+function showTab(p){document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x.dataset.p===p));
+ PANELS.forEach(q=>$('p-'+q).hidden=q!==p);$('rankBox').hidden=p==='learn';store.set('iontab',p);}
+document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.p)));
+
+/* learn */
+const by=n=>IONS.find(i=>i.n===n);
+$('cards').innerHTML=IONS.map((i,k)=>`<button type="button" class="card" data-k="${k}"><span class="nm">${i.n}</span><span class="fx">${fx(i.t)}</span><span class="tapnote">Antippen zum Aufdecken</span></button>`).join('');
+$('cards').addEventListener('click',e=>{const c=e.target.closest('.card');if(c)c.classList.toggle('open');});
+document.querySelectorAll('input[name=hide]').forEach(r=>r.addEventListener('change',()=>{
+ $('cards').className='grid '+r.value;$('cards').querySelectorAll('.card').forEach(c=>c.classList.remove('open'));}));
+const PAIRS=[['Nitrat','Nitrit'],['Sulfat','Sulfit'],['Sulfit','Sulfid'],['Carbonat','Hydrogencarbonat'],['Sulfat','Hydrogensulfat'],['Phosphat','Hydrogenphosphat'],['Hydrogenphosphat','Dihydrogenphosphat'],['Oxid','Hydroxid']];
+$('patTable').innerHTML=PAIRS.map(([a,b])=>`<tr><td><span class="fx">${fx(by(a).t)}</span><br><small>${a}</small></td><td>→</td><td><span class="fx">${fx(by(b).t)}</span><br><small>${b}</small></td></tr>`).join('');
+
+/* weights for spaced practice */
+let W=store.get('ionW',{});
+const wOf=n=>W[n]||1;
+function bump(n,ok){W[n]=Math.min(4,Math.max(.4,wOf(n)*(ok?.7:1.8)));store.set('ionW',W);}
+function pickW(last){let tot=0;IONS.forEach(i=>{if(i.n!==last)tot+=wOf(i.n)});let r=Math.random()*tot;
+ for(const i of IONS){if(i.n===last)continue;r-=wOf(i.n);if(r<=0)return i;}return IONS[0];}
+
+/* wrong-formula distractors: real ions of the same family + plausible mutations */
+function mutations(t){const out=[];const ch=t[t.length-1];const body=t.slice(0,-1);
+ CHG.filter(c=>c!==ch&&c!=='+').forEach(c=>out.push([...body,c]));
+ body.forEach((x,i)=>{const m=x.match(/^O(\d?)$/);if(!m||body[i+1]==='H')return;const n=+(m[1]||1);
+  [n-1,n+1].filter(v=>v>=1&&v<=4).forEach(v=>{const b=[...body];b[i]=v===1?'O':'O'+v;out.push([...b,ch]);});});
+ if(body[0]==='H')out.push([...body.slice(1),ch]);else if(body[0]!=='H2'&&body[0]!=='O'&&ch!=='+')out.push(['H',...body,ch]);
+ return out;}
+function formulaOptions(ion){const seen=new Set([key(ion.t)]);const pool=[];
+ const add=t=>{const k=key(t);if(!seen.has(k)){seen.add(k);pool.push(t);}};
+ shuffle(IONS.filter(i=>i.fam===ion.fam&&i!==ion)).slice(0,1).forEach(i=>add(i.t));
+ shuffle(mutations(ion.t)).forEach(add);
+ shuffle(IONS.filter(i=>i!==ion)).forEach(i=>add(i.t));
+ return shuffle([ion.t,...pool.slice(0,3)]);}
+function nameOptions(ion){const same=shuffle(IONS.filter(i=>i.fam===ion.fam&&i!==ion));const rest=shuffle(IONS.filter(i=>i.fam!==ion.fam));
+ return shuffle([ion,...[...same,...rest].slice(0,3)]);}
+
+/* rounds + ranking (shared) */
+let newIdx=-1;
+function getRank(){return store.get('ionrank',[]);}
+function renderRank(){const r=getRank();const t=$('rankTable');
+ t.innerHTML=r.length?'<tr><th>#</th><th>Name</th><th>Score</th><th>Zeit</th><th>Modus</th><th>Datum</th></tr>'+r.map((e,i)=>`<tr class="${i===newIdx?'new':''}"><td>${i+1}</td><td class="nm"></td><td class="pct">${e.pct}%</td><td>${fmtTime(e.ms)}</td><td>${e.mode}</td><td>${e.date.slice(5).split('-').reverse().join('.')}</td></tr>`).join(''):'<tr><td>Noch keine Runden gespeichert.</td></tr>';
+ if(r.length)t.querySelectorAll('td.nm').forEach((td,i)=>td.textContent=r[i].name);}
+function saveRes(res,nameEl,resultEl){const name=nameEl.value.trim()||'Anonym';store.set('ionname',name);
+ const entry={...res,name,ts:Date.now()};const r=getRank();r.push(entry);
+ r.sort((a,b)=>b.pct-a.pct||a.ms-b.ms||a.ts-b.ts);const kept=r.slice(0,20);store.set('ionrank',kept);
+ newIdx=kept.indexOf(entry);resultEl.hidden=true;
+ $('rankMsg').textContent=newIdx<0?'Gespeichert, aber nicht in den Top 20.':`Gespeichert: Platz ${newIdx+1}.`;renderRank();}
+function makeRound(){return{active:true,n:0,ok:0,t0:Date.now(),q:shuffle(IONS).slice(0,10)};}
+function finishRound(R,mode,pfx){const ms=Date.now()-R.t0;R.active=false;
+ const res={pct:R.ok*10,ms,mode,date:new Date().toISOString().slice(0,10)};
+ $(pfx+'Pct').textContent=res.pct+'%';$(pfx+'Detail').textContent=`${R.ok} von 10 richtig in ${fmtTime(ms)} · ${mode}`;
+ $(pfx+'Name').value=store.get('ionname','');$(pfx+'Result').hidden=false;
+ $(pfx+'Result').scrollIntoView({behavior:'smooth',block:'center'});return res;}
+function progText(R,el){el.textContent=R.active?`Runde: Frage ${Math.min(R.n+1,10)} / 10 · ${R.ok} richtig`:'Freies Üben';el.classList.toggle('on',R.active);}
+
+/* quiz */
+const DIRN={nf:'Name → Formel',fn:'Formel → Name',mix:'Gemischt'};
+let qR={active:false},qCur=null,qDirNow='nf',qLast=null,qDone=false,qS={n:0,ok:0},qRes=null;
+function qNext(){if(qR.active&&qR.n>=10)return;
+ qCur=qR.active?qR.q[qR.n]:pickW(qLast);qLast=qCur.n;qDone=false;
+ const d=$('qDir').value;qDirNow=d==='mix'?(Math.random()<.5?'nf':'fn'):d;
+ const tx=$('qText');
+ if(qDirNow==='nf'){$('qTag').textContent='WELCHE FORMEL?';tx.className='qtext';tx.textContent=qCur.n;
+  $('qAns').innerHTML=formulaOptions(qCur).map(t=>`<button class="ab fx" data-k="${key(t)}">${fx(t)}</button>`).join('');}
+ else{$('qTag').textContent='WIE HEISST DIESES ION?';tx.className='qtext fx';tx.innerHTML=fx(qCur.t);
+  $('qAns').innerHTML=nameOptions(qCur).map(i=>`<button class="ab" data-k="${key(i.t)}">${i.n}</button>`).join('');}
+ $('qFb').textContent='';progText(qR,$('qProg'));}
+$('qAns').addEventListener('click',e=>{const b=e.target.closest('.ab');if(!b||qDone)return;qDone=true;
+ const ok=b.dataset.k===key(qCur.t);
+ $('qAns').querySelectorAll('.ab').forEach(x=>{x.disabled=true;if(x.dataset.k===key(qCur.t))x.classList.add('right');});
+ if(!ok)b.classList.add('wrong');
+ $('qFb').innerHTML=ok?'<span class="y">Richtig.</span>':`<span class="n">Falsch.</span> ${qCur.n} = <span class="fx">${fx(qCur.t)}</span>`;
+ bump(qCur.n,ok);qS.n++;if(ok)qS.ok++;$('qStats').textContent=`Diese Sitzung: ${qS.ok} / ${qS.n} richtig`;
+ if(qR.active){qR.n++;if(ok)qR.ok++;if(qR.n>=10){progText(qR,$('qProg'));qRes=finishRound(qR,DIRN[$('qDir').value],'q');}else progText(qR,$('qProg'));}});
+$('qNext').addEventListener('click',qNext);
+$('qDir').addEventListener('change',()=>{store.set('iondir',$('qDir').value);if(!qR.active)qNext();});
+$('qStart').addEventListener('click',()=>{qR=makeRound();qRes=null;$('qResult').hidden=true;qS={n:0,ok:0};$('qStats').textContent='';qNext();});
+$('qForm').addEventListener('submit',e=>{e.preventDefault();if(!qRes)return;saveRes(qRes,$('qName'),$('qResult'));qRes=null;progText(qR,$('qProg'));});
+$('qReset').addEventListener('click',()=>{W={};store.set('ionW',W);qS={n:0,ok:0};$('qStats').textContent='Fortschritt zurückgesetzt.';qNext();});
+
+/* build */
+const PAD=[['ELEMENT',['H','H2','H4','N','S','C','P','O','O2','O3','O4']],['LADUNG',CHG]];
+$('bPad').innerHTML=PAD.map(([l,ts])=>`<div class="prow"><span class="lab">${l}</span>${ts.map(t=>`<button class="tk fx" data-t="${t}" aria-label="${t}">${isChg(t)?sup(t).replace('<sup','<span').replace('</sup>','</span>'):fx([t])}</button>`).join('')}</div>`).join('')
+ +`<div class="prow"><button class="tk op" data-op="back">⌫ Zurück</button><button class="tk op" data-op="clear">Leeren</button></div>`;
+let bR={active:false},bCur=null,bLast=null,bIn=[],bDone=false,bS={n:0,ok:0},bRes=null;
+function bDraw(){const o=$('bOut');o.className='build';o.innerHTML=bIn.length?`<span class="fx">${fx(bIn)}</span>`:'<span class="ph">Tippe die Bausteine in der richtigen Reihenfolge</span>';}
+function bNext(){if(bR.active&&bR.n>=10)return;bCur=bR.active?bR.q[bR.n]:pickW(bLast);bLast=bCur.n;bIn=[];bDone=false;
+ $('bText').textContent=bCur.n;$('bFb').textContent='';bDraw();progText(bR,$('bProg'));}
+$('bPad').addEventListener('click',e=>{const b=e.target.closest('.tk');if(!b||bDone)return;
+ if(b.dataset.op==='back')bIn.pop();else if(b.dataset.op==='clear')bIn=[];
+ else{const t=b.dataset.t;if(isChg(t)){if(bIn.length&&isChg(bIn[bIn.length-1]))bIn.pop();if(bIn.length)bIn.push(t);}
+  else{if(bIn.length&&isChg(bIn[bIn.length-1]))bIn.pop();bIn.push(t);}}
+ bDraw();});
+$('bCheck').addEventListener('click',()=>{if(bDone||!bIn.length)return;bDone=true;
+ const ok=key(bIn)===key(bCur.t);$('bOut').classList.add(ok?'right':'wrong');
+ $('bFb').innerHTML=ok?'<span class="y">Richtig.</span>':`<span class="n">Falsch.</span> Richtig ist <span class="fx">${fx(bCur.t)}</span>`;
+ bump(bCur.n,ok);bS.n++;if(ok)bS.ok++;$('bStats').textContent=`Diese Sitzung: ${bS.ok} / ${bS.n} richtig`;
+ if(bR.active){bR.n++;if(ok)bR.ok++;progText(bR,$('bProg'));if(bR.n>=10)bRes=finishRound(bR,'Bauen','b');}});
+$('bNext').addEventListener('click',bNext);
+$('bStart').addEventListener('click',()=>{bR=makeRound();bRes=null;$('bResult').hidden=true;bS={n:0,ok:0};$('bStats').textContent='';bNext();});
+$('bForm').addEventListener('submit',e=>{e.preventDefault();if(!bRes)return;saveRes(bRes,$('bName'),$('bResult'));bRes=null;progText(bR,$('bProg'));});
+
+let clearArmed=false;
+$('rankClear').addEventListener('click',e=>{const b=e.currentTarget;
+ if(!clearArmed){clearArmed=true;b.textContent='Nochmals tippen zum Löschen';setTimeout(()=>{clearArmed=false;b.textContent='Rangliste löschen';},3000);return;}
+ store.set('ionrank',[]);newIdx=-1;clearArmed=false;b.textContent='Rangliste löschen';$('rankMsg').textContent='Rangliste gelöscht.';renderRank();});
+
+/* init */
+$('qDir').value=store.get('iondir','nf');
+renderRank();qNext();bNext();showTab(store.get('iontab','learn'));
+</script>
+</body>
+</html>
